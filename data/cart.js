@@ -6,6 +6,7 @@ function itemToJson(itemContainer, league) {
     return {
         "name": $.trim($(itemContainer).find(".item-cell a.title").text()),
         "data_hash": $(itemContainer).find("span.requirements span.click-button").attr("data-hash"),
+        "thread": $(itemContainer).find("span.requirements span.click-button").attr("data-thread"),
         "league": league,
         //"search_url": window.location.href,
     };
