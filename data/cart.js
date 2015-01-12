@@ -18,41 +18,48 @@
 
 'use strict';
 
-var itemContainerSelector = 'tbody[id^="item-container"]';
-
-function itemToJson(itemContainer, league) {
-    return {
-        'name': $.trim($(itemContainer).find('.item-cell a.title').text()),
-        'data_hash': $(itemContainer).find('span.requirements span.click-button').attr('data-hash'),
-        'thread': $(itemContainer).find('span.requirements span.click-button').attr('data-thread'),
-        'league': league,
-        //"search_url": window.location.href,
-    };
+if (typeof PoeClerk == "undefined") {
+    var PoeClerk = {};
 }
 
-// save league at first so we get the one they actually searched in,
-// in case they change it afterward
-var league = $('form#search select.league').siblings().find('a.chosen-single span').text();
+PoeClerk.cart = function () {
+    var $jq = jQuery.noConflict();
+    var itemContainerSelector = 'tbody[id^="item-container"]';
 
-// append add button to each item
-for (var i = 0; i < $(itemContainerSelector).length; i++) {
-    $('tbody#item-container-' + i.toString())
-    .find('span.requirements')
-    .append(' · <span class="click-button add-to-cart">Add to Cart</span>');
-};
+    function itemToJson(itemContainer, league) {
+        return {
+            'name': $jq.trim($jq(itemContainer).find('.item-cell a.title').text()),
+            'data_hash': $jq(itemContainer).find('span.requirements span.click-button').attr('data-hash'),
+            'thread': $jq(itemContainer).find('span.requirements span.click-button').attr('data-thread'),
+            'league': league,
+            //"search_url": window.location.href,
+        };
+    }
 
-// emit add signal on button click
-$('.add-to-cart').click(function() {
-    // store item data
-    self.port.emit('addItem', itemToJson($(this).closest(itemContainerSelector), league));
+    // save league at first so we get the one they actually searched in,
+    // in case they change it afterward
+    var league = $jq('form#search select.league').siblings().find('a.chosen-single span').text();
 
-    // refresh cart
-    self.port.emit('refreshCart');
+    // append add button to each item
+    for (var i = 0; i < $jq(itemContainerSelector).length; i++) {
+        $jq('tbody#item-container-' + i.toString())
+        .find('span.requirements')
+        .append(' · <span class="click-button add-to-cart">Add to Cart</span>');
+    };
 
-    $(this).html('Item added to cart!');
-    $(this).fadeOut(2000);
-});
+    // emit add signal on button click
+    $jq('.add-to-cart').click(function() {
+        // store item data
+        self.port.emit('addItem', itemToJson($jq(this).closest(itemContainerSelector), league));
 
-self.port.on('addedDuplicateToCart', function(item) {
-    alert('This item is already in your cart.');
-});
+        // refresh cart
+        self.port.emit('refreshCart');
+
+        $jq(this).html('Item added to cart!');
+        $jq(this).fadeOut(2000);
+    });
+
+    self.port.on('addedDuplicateToCart', function(item) {
+        alert('This item is already in your cart.');
+    });
+}();
