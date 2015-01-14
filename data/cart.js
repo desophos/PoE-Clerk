@@ -35,6 +35,10 @@ PoeClerk.cart = function () {
             'name': $jq.trim($jq(itemContainer).find('.item-cell a.title').text()),
             'data_hash': $jq(itemContainer).find('span.requirements span.click-button').attr('data-hash'),
             'thread': $jq(itemContainer).find('span.requirements span.click-button').attr('data-thread'),
+            // exclude implicit mod
+            'mods': $jq(itemContainer).find('ul.mods:not(.withline) li').map(function () {
+                return $jq(this).html();
+            }),
             'league': league,
             //"search_url": window.location.href,
         };

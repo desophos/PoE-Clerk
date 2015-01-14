@@ -26,6 +26,11 @@ PoeClerk.sidebar = function () {
     var $jq = jQuery.noConflict();
 
     function makeItemRow(item) {
+        var mods_div = '<div class="mods"><table>';
+        for (var i = 0; i < item.mods.length; i++) {
+            mods_div += '<tr class="mod"><td>' + item.mods[i] + '</td></tr>';
+        }
+        mods_div += '</table></div>';
         return '<tr class="item-row" data-hash="'
             + item.data_hash
             + '" thread="'
@@ -35,16 +40,20 @@ PoeClerk.sidebar = function () {
             //+ '" search-url="'
             //+ item.search_url
             + '">'
+            + '<td class="expander"><span class="button">+</span></td>'
             + '<td class="item-name">'
             + item.name
             + '</td>'
             + '<td class="view-item"><span class="button">view</span></td>'
             + '<td class="remove-item"><span class="button">x</span></td>'
             + '</tr>'
+            + '<tr class="mods"><td colspan="4">'
+            + mods_div
+            + '</td></tr>'
             + '<tr class="spacer"><td></td></tr>';
     }
 
-    addon.port.on("refreshCart", function(cart) {
+    addon.port.on("refreshCart", function (cart) {
         $jq('#items-table').html('');
 
         for (var i = 0; i < cart.length; i++) {
@@ -61,7 +70,18 @@ PoeClerk.sidebar = function () {
                     + '"]'
                 );
 
-                $jq(item_tr).find('.view-item span').off('click').on('click', function() {
+                $jq(item_tr).find('.expander span').off('click').on('click', function () {
+                    $jq(item_tr).next().find('div.mods').first().slideToggle(function () {
+                        var expander = $jq(item_tr.find('.expander span'));
+                        if ($jq(expander).text() === '+') {
+                            $jq(expander).text('-');
+                        } else {
+                            $jq(expander).text('+');
+                        }
+                    });
+                });
+
+                $jq(item_tr).find('.view-item span').off('click').on('click', function () {
                     addon.port.emit(
                         'viewItem',
                         {
@@ -72,7 +92,8 @@ PoeClerk.sidebar = function () {
                     );
                 });
 
-                $jq(item_tr).find('.remove-item span').off('click').on('click', function() {
+                $jq(item_tr).find('.remove-item span').off('click').on('click', function () {
+                    $jq(item_tr).next('tr.mods').remove();
                     $jq(item_tr).next('tr.spacer').remove();
                     item_tr.remove();
                     addon.port.emit('removeItem', cart[i]);

@@ -3,6 +3,10 @@ body {
     background-color: #000;
 }
 
+div.mods {
+    display: none;
+}
+
 table {
     border-collapse: collapse;
     border: 0;
@@ -20,8 +24,20 @@ tr.spacer {
     height: 8px;
 }
 
+tr.mods {
+    background-color: #222;
+}
+
+tr.mod {
+    border-top: 1px solid #444;
+}
+
 td {
     padding-right: 5px;
+}
+
+td.expander {
+    width: 15px;
 }
 
 td.view-item, td.remove-item {
