@@ -26,6 +26,10 @@ PoeClerk.cart = function () {
     var $jq = jQuery.noConflict();
     var itemContainerSelector = 'tbody[id^="item-container"]';
 
+    // save league at first so we get the one they actually searched in,
+    // in case they change it afterward
+    var league = $jq('form#search select.league').siblings().find('a.chosen-single span').text();
+
     function itemToJson(itemContainer, league) {
         return {
             'name': $jq.trim($jq(itemContainer).find('.item-cell a.title').text()),
@@ -36,30 +40,42 @@ PoeClerk.cart = function () {
         };
     }
 
-    // save league at first so we get the one they actually searched in,
-    // in case they change it afterward
-    var league = $jq('form#search select.league').siblings().find('a.chosen-single span').text();
+    function addAddToCart() {
+        // append add button to each item
+        for (var i = 0; i < $jq(itemContainerSelector).length; i++) {
+            $jq('tbody#item-container-' + i.toString())
+            .find('span.requirements')
+            .append(' · <span class="click-button add-to-cart">Add to Cart</span>');
+        };
 
-    // append add button to each item
-    for (var i = 0; i < $jq(itemContainerSelector).length; i++) {
-        $jq('tbody#item-container-' + i.toString())
-        .find('span.requirements')
-        .append(' · <span class="click-button add-to-cart">Add to Cart</span>');
-    };
+        // emit add signal on button click
+        $jq('.add-to-cart').click(function () {
+            // store item data
+            self.port.emit('addItem', itemToJson($jq(this).closest(itemContainerSelector), league));
 
-    // emit add signal on button click
-    $jq('.add-to-cart').click(function() {
-        // store item data
-        self.port.emit('addItem', itemToJson($jq(this).closest(itemContainerSelector), league));
+            // refresh cart
+            self.port.emit('refreshCart');
 
-        // refresh cart
-        self.port.emit('refreshCart');
-
-        $jq(this).html('Item added to cart!');
-        $jq(this).fadeOut(2000);
-    });
+            $jq(this).html('Item added to cart!');
+            $jq(this).fadeOut(2000);
+        });
+    }
 
     self.port.on('addedDuplicateToCart', function(item) {
         alert('This item is already in your cart.');
     });
+
+    // add buttons on initial pageload
+    addAddToCart();
+
+    // add buttons on ajax item sort
+    new MutationObserver(function (mutations) {
+        console.log(mutations);
+        mutations.forEach(function (mutation) {
+            if ($jq(mutation.target).html() === '') {
+                // done loading, so add buttons
+                addAddToCart();
+            }
+        });
+    }).observe($jq('.loader').get(0), {childList: true});
 }();
