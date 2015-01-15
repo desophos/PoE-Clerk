@@ -2,8 +2,8 @@
   "name": "poe_clerk",
   "title": "PoE Clerk",
   "id": "jid1-cyr1koGX1xEPtw",
-  "description": "poe.trade helper",
+  "description": "Makes shopping easy at your friendly neighborhood poe.trade!",
   "author": "Daniel Horowitz",
   "license": "GPL 2.0",
-  "version": "0.1"
+  "version": "0.2"
 }
