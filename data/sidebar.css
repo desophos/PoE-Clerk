@@ -38,6 +38,7 @@ td {
 
 td.expander {
     width: 25px;
+    min-width: 25px;
 }
 
 td.view-item, td.remove-item {
