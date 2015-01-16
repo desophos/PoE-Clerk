@@ -74,7 +74,6 @@ PoeClerk.cart = function () {
 
     // add buttons on ajax item sort
     new MutationObserver(function (mutations) {
-        console.log(mutations);
         mutations.forEach(function (mutation) {
             if ($jq(mutation.target).html() === '') {
                 // done loading, so add buttons
