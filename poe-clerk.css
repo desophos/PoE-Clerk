@@ -1,0 +1,84 @@
+#poe-clerk {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 400px;
+    height: 100%;
+    z-index: 6666;
+    background-color: #000;
+    border-left: 5px solid #aaa;
+    padding: 5px;
+    overflow: auto;
+    min-width: 200px;
+    max-width: 500px;
+}
+
+#poe-clerk td {
+    padding: 0;
+    margin: 0;
+}
+
+#poe-clerk .toggle {
+    display: none;
+}
+
+#poe-clerk #items-table {
+    border-collapse: collapse;
+    border: 0;
+    width: 100%;
+    font-size: 12pt;
+    font-family: sans-serif;
+}
+
+#poe-clerk .item-row {
+    background-color: #222;
+}
+
+#poe-clerk .mods-row {
+    background-color: #222;
+    font-size: 10pt;
+}
+
+#poe-clerk .spacer-row {
+    background-color: #000;
+    height: 8px;
+}
+
+#poe-clerk .mods {
+    margin: 0;
+    border-bottom: 1px solid #444;
+}
+
+#poe-clerk .mod {
+    border-top: 1px solid #444;
+}
+
+#poe-clerk .expander, #poe-clerk .view-item, #poe-clerk .remove-item {
+    padding-right: 5px;
+}
+
+#poe-clerk .expander {
+    width: 25px;
+    min-width: 25px;
+}
+
+#poe-clerk .view-item, #poe-clerk .remove-item {
+    width: 1px;
+}
+
+#poe-clerk button {
+    background-color: #444;
+    border-radius: 8px;
+    border: 0;
+    cursor: pointer;
+    padding: 2px 5px;
+    margin: 0;
+}
+
+#poe-clerk .expander button {
+    width: 100%;
+}
+
+.rui-resizable-handle {
+    background-image: GM_getResourceURL('resizeHandle');
+}
