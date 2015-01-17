@@ -45,18 +45,38 @@ function itemsEqual (item1, item2) {
         && item1.league === item2.league;
 }
 
-function itemToJson(itemContainer) {
-    return {
-        'name': $.trim($(itemContainer).find('.item-cell a.title').text()),
-        'data_hash': $(itemContainer).find('span.requirements span.click-button').attr('data-hash'),
-        'thread': $(itemContainer).find('span.requirements span.click-button').attr('data-thread'),
-        // exclude implicit mod
-        'mods': $(itemContainer).find('ul.mods:not(.withline) li').map(function () {
-            return $(this).html();
-        }).get(),
-        'league': league,
-        //"search_url": window.location.href,
-    };
+function itemToJson (itemContainer) {
+    var itemContainerType = $(itemContainer).prop('tagName');
+    if (itemContainerType === 'TBODY') {
+        // list view
+        return {
+            'name': $.trim($(itemContainer).find('.item-cell a.title').text().replace('corrupted ', '')),
+            'data_hash': $(itemContainer).find('span.requirements span.click-button').attr('data-hash'),
+            'thread': $(itemContainer).find('span.requirements span.click-button').attr('data-thread'),
+            // exclude implicit mod
+            'mods': $(itemContainer).find('ul.mods:not(.withline) li').map(function () {
+                return $(this).html();
+            }).get(),
+            'league': league,
+            //"search_url": window.location.href,
+        };
+    } else if (itemContainerType === 'DIV') {
+        // tiles view
+        var titleText = $.trim($(itemContainer).find('li.title').text())
+        return {
+            'name': $.trim($(itemContainer).find('li.title').html().replace('<br>', ' ')),
+            'data_hash': $(itemContainer).find('li.description > span.click-button').attr('data-hash'),
+            'thread': $(itemContainer).find('li.description > span.click-button').attr('data-thread'),
+            // exclude implicit mod
+            'mods': $(itemContainer).find('ul.mods:not(.withline) li').map(function () {
+                return $(this).html();
+            }).get(),
+            'league': league,
+            //"search_url": window.location.href,
+        };
+    } else {
+        return {};
+    }
 }
 
 function viewItem (item) {
@@ -84,7 +104,7 @@ function addAddToCart() {
     // append add button to each item
     var cart = loadCart();
     for (var i = 0; i < $(itemContainerSelector).length; i++) {
-        var itemContainer = $('tbody#item-container-' + i.toString());
+        var itemContainer = $('#item-container-' + i.toString());
         var itemInCart = false;
         for (var j = 0; j < cart.length; j++) {
             if (itemsEqual(itemToJson(itemContainer), cart[j])) {
@@ -95,9 +115,16 @@ function addAddToCart() {
         if (!itemInCart) {
             var addToCartButton = itemContainer.find('span.add-to-cart')
             if (addToCartButton.length === 0) {
-                itemContainer.find('span.requirements')
-                .append('<span class="add-to-cart-separator"> · </span>' +
-                        '<span class="click-button add-to-cart">Add to Cart</span>');
+                // list view
+                var containerToAppendTo = itemContainer.find('span.requirements');
+                if (containerToAppendTo.length === 0) {
+                    // tiles view
+                    containerToAppendTo = itemContainer.find('li.description').last();
+                }
+                containerToAppendTo.append(
+                    '<span class="add-to-cart-separator"> · </span>' +
+                    '<span class="click-button add-to-cart">Add to Cart</span>'
+                );
             } else if (addToCartButton.css('display') === 'none') {
                 addToCartButton.html('Add to Cart');
                 addToCartButton.css('display', '');
@@ -286,5 +313,5 @@ $(window).load(function () {
 
 GM_addStyle(GM_getResourceText('sidebarCSS'));
 
-var itemContainerSelector = 'tbody[id^="item-container"]';
+var itemContainerSelector = '[id^="item-container"]';
 var league; // initialized onLoad
