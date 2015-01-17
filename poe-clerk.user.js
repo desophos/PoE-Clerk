@@ -1,11 +1,33 @@
+/*
+    Copyright (C) 2015  Daniel Horowitz
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+*/
+
 // ==UserScript==
 // @name         PoE Clerk
+// @author       desophos
 // @namespace    http://github.com/desophos
 // @description  Makes shopping easy at your friendly neighborhood poe.trade!
 // @version      0.2.0
+// @icon         poe-clerk.png
+// @license      GPL 2.0
+// @resource     license https://raw.githubusercontent.com/desophos/PoE-Clerk/master/LICENSE.md
 // @include      http://poe.trade/search/*
 // @require      https://code.jquery.com/jquery-2.1.3.min.js
-// @resource     sidebarCSS    poe-clerk.css
+// @resource     sidebarCSS poe-clerk.css
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
 // @grant        GM_setValue
@@ -194,13 +216,34 @@ function showSidebar () {
         + '<table id="items-table">'
         + '</table></div>'
     );
-/*
-    $('#poe-clerk').resizable({
-        handles: 'w',
-        minWidth: 200,
-        maxWidth: 500,
-    })
-*/
+
+    var sidebarWidth; // for storing pre-resize width
+
+    function resizeMain () {
+        sidebarWidth = $('#poe-clerk').css('width');
+        $('html').css ({
+            position: 'relative',
+            width: 'calc(100% - ' + sidebarWidth + ')',
+            left: sidebarWidth,
+        });
+    }
+
+    resizeMain();
+    // resize the rest of the window when the sidebar is resized
+    new MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+            // horrible hack:
+            // we don't know what style changed,
+            // so only resize main if the width changed
+            if (sidebarWidth !== $('#poe-clerk').css('width')) {
+                resizeMain();
+            }
+        });
+    }).observe($('#poe-clerk').get(0), {
+        attributes: true,
+        attributeFilter: ['style'],
+    });
+
     refreshCart();
 }
 
@@ -226,28 +269,7 @@ $(window).load(function () {
     showSidebar();
 });
 
-/*
-// inject jQuery UI CSS
-$("head").append (
-    '<link ' +
-    'href="https://code.jquery.com/ui/1.11.2/themes/ui-darkness/jquery-ui.css" ' +
-    'rel="stylesheet" type="text/css">'
-);
-*/
 GM_addStyle(GM_getResourceText('sidebarCSS'));
 
 var itemContainerSelector = 'tbody[id^="item-container"]';
-var league = ''; // initialized onLoad
-
-/*
-// wipe storage on install, enable, upgrade, or downgrade
-// in case of object structure changes
-exports.main = function (options) {
-    var storage = require('sdk/simple-storage').storage;
-    if (['install', 'enable', 'upgrade', 'downgrade'].indexOf(options.loadReason) !== -1) {
-        for (var prop in storage) {
-            delete storage[prop];
-        }
-    }
-}
-*/
+var league; // initialized onLoad
