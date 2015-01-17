@@ -19,6 +19,10 @@
     max-width: 500px;
 }
 
+#poe-clerk > #header > h5 {
+    border-bottom: 1px solid;
+}
+
 #poe-clerk td {
     padding: 0;
     margin: 0;

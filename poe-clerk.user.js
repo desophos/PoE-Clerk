@@ -21,7 +21,7 @@
 // @author       desophos
 // @namespace    http://github.com/desophos
 // @description  Makes shopping easy at your friendly neighborhood poe.trade!
-// @version      0.2.0
+// @version      0.3.0
 // @icon         poe-clerk.png
 // @license      GPL 2.0
 // @resource     license https://raw.githubusercontent.com/desophos/PoE-Clerk/master/LICENSE.md
@@ -203,8 +203,13 @@ function saveCart (cart) {
 function showSidebar () {
     $('body').append (''
         + '<div id="poe-clerk">'
+        + '<div id="header">'
+        + '<h5>My Shopping Cart</h5>'
+        + '</div>'
         + '<table id="items-table">'
-        + '</table></div>'
+        + '</table>'
+        + '<div id="footer"></div>'
+        + '</div>'
     );
 
     var sidebarWidth; // for storing pre-resize width
