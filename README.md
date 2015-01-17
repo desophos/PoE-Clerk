@@ -4,3 +4,5 @@ Currently, PoE Clerk is limited to a shopping cart, accessible in a sidebar, tha
 You can resize the sidebar using the handle at its bottom right.
 
 Some example screenshots are in the screenshots/ directory if you're curious about how PoE Clerk looks.
+
+PoE Clerk is compatible with the Dark poe.trade theme (and none other).
