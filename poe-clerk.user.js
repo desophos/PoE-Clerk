@@ -62,7 +62,6 @@ function itemToJson (itemContainer) {
         };
     } else if (itemContainerType === 'DIV') {
         // tiles view
-        var titleText = $.trim($(itemContainer).find('li.title').text())
         return {
             'name': $.trim($(itemContainer).find('li.title').html().replace('<br>', ' ')),
             'data_hash': $(itemContainer).find('li.description > span.click-button').attr('data-hash'),
@@ -289,16 +288,20 @@ function showSidebar () {
     refreshCart();
 }
 
-// wait until onLoad; earlier, league and .loader aren't there :/
-$(window).load(function () {
-    // save league at first so we get the one they actually searched in,
-    // in case they change it afterward
-    league = $('form#search select.league').siblings().find('a.chosen-single span').text();
+function loadPoeClerk () {
+    // wait for everything to actually load,
+    // because it's not necessarily all rendered by the time onLoad fires
+    if (($(itemContainerSelector).length !== 0) && // items
+        ($('.loader').length !== 0) && // loader
+        ($('form#search select.league').siblings().find('a.chosen-single span').length !== 0) // league field
+    ) {
+        // save league at first so we get the one they actually searched in,
+        // in case they change it afterward
+        league = $('form#search select.league').siblings().find('a.chosen-single span').text();
 
-    // add buttons on initial pageload
-    addAddToCart();
+        // add buttons on initial pageload
+        addAddToCart();
 
-    if ($('.loader').length !== 0) {
         // add buttons on ajax item sort
         new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
@@ -308,12 +311,18 @@ $(window).load(function () {
                 }
             });
         }).observe($('.loader').get(0), {childList: true});
-    }
 
-    showSidebar();
-});
+        showSidebar();
+    } else {
+        // if everything we want isn't loaded,
+        // wait a second and check again
+        window.setTimeout(loadPoeClerk, 1000);
+    }
+}
 
 GM_addStyle(GM_getResourceText('sidebarCSS'));
 
 var itemContainerSelector = '[id^="item-container"]';
 var league; // initialized onLoad
+
+loadPoeClerk();
