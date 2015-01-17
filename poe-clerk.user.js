@@ -298,15 +298,17 @@ $(window).load(function () {
     // add buttons on initial pageload
     addAddToCart();
 
-    // add buttons on ajax item sort
-    new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if ($(mutation.target).html() === '') {
-                // done loading, so add buttons
-                addAddToCart();
-            }
-        });
-    }).observe($('.loader').get(0), {childList: true});
+    if ($('.loader').length !== 0) {
+        // add buttons on ajax item sort
+        new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if ($(mutation.target).html() === '') {
+                    // done loading, so add buttons
+                    addAddToCart();
+                }
+            });
+        }).observe($('.loader').get(0), {childList: true});
+    }
 
     showSidebar();
 });
