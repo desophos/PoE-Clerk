@@ -45,7 +45,7 @@ function itemsEqual (item1, item2) {
         && item1.league === item2.league;
 }
 
-function itemToJson(itemContainer, league) {
+function itemToJson(itemContainer) {
     return {
         'name': $.trim($(itemContainer).find('.item-cell a.title').text()),
         'data_hash': $(itemContainer).find('span.requirements span.click-button').attr('data-hash'),
@@ -82,19 +82,38 @@ function addToCart (item) {
 
 function addAddToCart() {
     // append add button to each item
+    var cart = loadCart();
     for (var i = 0; i < $(itemContainerSelector).length; i++) {
-        $('tbody#item-container-' + i.toString())
-        .find('span.requirements')
-        .append(' · <span class="click-button add-to-cart">Add to Cart</span>');
-    };
+        var itemContainer = $('tbody#item-container-' + i.toString());
+        var itemInCart = false;
+        for (var j = 0; j < cart.length; j++) {
+            if (itemsEqual(itemToJson(itemContainer), cart[j])) {
+                itemInCart = true;
+                break;
+            }
+        }
+        if (!itemInCart) {
+            var addToCartButton = itemContainer.find('span.add-to-cart')
+            if (addToCartButton.length === 0) {
+                itemContainer.find('span.requirements')
+                .append('<span class="add-to-cart-separator"> · </span>' +
+                        '<span class="click-button add-to-cart">Add to Cart</span>');
+            } else if (addToCartButton.css('display') === 'none') {
+                addToCartButton.html('Add to Cart');
+                addToCartButton.css('display', '');
+                addToCartButton.siblings('span.add-to-cart-separator').css('display', '');
+            }
+        }
+    }
 
     // emit add signal on button click
-    $('.add-to-cart').click(function () {
+    $('.add-to-cart').off('click').on('click', function () {
         // store item data
-        addToCart(itemToJson($(this).closest(itemContainerSelector), league));
+        addToCart(itemToJson($(this).closest(itemContainerSelector)));
 
         $(this).html('Item added to cart!');
         $(this).fadeOut(2000);
+        $(this).siblings('span.add-to-cart-separator').fadeOut(2000);
     });
 }
 
@@ -183,6 +202,7 @@ function removeItem (item) {
         return !(itemsEqual(item, i));
     }));
     refreshCart();
+    addAddToCart();
 }
 
 function saveItem (item) {
