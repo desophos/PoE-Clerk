@@ -4,4 +4,4 @@ Currently, PoE Clerk is limited to a shopping cart, accessible in a sidebar, tha
 
 You can resize the sidebar using the handle at its bottom right.
 
-PoE Clerk is compatible with the Dark poe.trade theme (and none other).
+PoE Clerk is compatible with both the List and Tiles views, but Modern Dark is the only compatible theme.
