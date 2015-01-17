@@ -1,3 +1,8 @@
+#poe-clerk * {
+    /* fix resize inheritance bug in Chrome */
+    resize: none;
+}
+
 #poe-clerk {
     position: fixed;
     top: 0;
