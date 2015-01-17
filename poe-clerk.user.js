@@ -53,7 +53,7 @@ function itemToJson(itemContainer, league) {
         // exclude implicit mod
         'mods': $(itemContainer).find('ul.mods:not(.withline) li').map(function () {
             return $(this).html();
-        }),
+        }).get(),
         'league': league,
         //"search_url": window.location.href,
     };
@@ -176,16 +176,6 @@ function refreshCart () {
             });
         })(i);
     }
-
-    //$('button').button();
-
-    /*
-    $('#items-table tbody').accordion({
-        collapsible: true,
-        header: '.item-row',
-        heightStyle: 'content',
-    });
-    */
 }
 
 function removeItem (item) {
