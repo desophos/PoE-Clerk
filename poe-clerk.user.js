@@ -21,13 +21,13 @@
 // @author       desophos
 // @namespace    http://github.com/desophos
 // @description  Makes shopping easy at your friendly neighborhood poe.trade!
-// @version      0.3.0
-// @icon         poe-clerk.png
+// @version      1.0.0
+// @icon         https://github.com/desophos/PoE-Clerk/raw/master/poe-clerk.png
 // @license      GPL 2.0
 // @resource     license https://raw.githubusercontent.com/desophos/PoE-Clerk/master/LICENSE.md
 // @include      http://poe.trade/search/*
 // @require      https://code.jquery.com/jquery-2.1.3.min.js
-// @resource     sidebarCSS poe-clerk.css
+// @resource     sidebarCSS https://github.com/desophos/PoE-Clerk/raw/master/poe-clerk.css
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
 // @grant        GM_setValue
